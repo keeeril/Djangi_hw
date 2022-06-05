@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 
 DATA = {
     'omlet': {
@@ -16,8 +17,28 @@ DATA = {
         'сыр, ломтик': 1,
         'помидор, ломтик': 1,
     },
-    # можете добавить свои рецепты ;)
+    'for_alina': {
+        'авокадо': 1,
+        'круассан из ВкусВилл': 1,
+        'хлебцы': 1,
+    }
 }
+
+def recepi(request, dish):
+    serving = request.GET.get('serving')
+    if serving and int(serving) != 0:
+        count_ingred = {}
+        for ingred, count in DATA[dish].items():
+            count_ingred[ingred] = count * int(serving)
+        context = {
+            'recipe': count_ingred
+        }
+    else:
+        context = {
+            'recipe': DATA[dish]
+        }
+    return render(request, 'calculator/index.html', context)
+
 
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
